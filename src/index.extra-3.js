@@ -1,13 +1,12 @@
 /** @jsx jsx */
 import {jsx} from '@emotion/core'
-
-import 'bootstrap/dist/css/bootstrap-reboot.css'
 import '@reach/dialog/styles.css'
+import 'bootstrap/dist/css/bootstrap-reboot.css'
 import * as React from 'react'
 import ReactDOM from 'react-dom'
-import {Button, Input, FormGroup, Spinner} from './components/lib'
-import {Modal, ModalContents, ModalOpenButton} from './components/modal'
+import {Button, FormGroup, Input} from './components/lib'
 import {Logo} from './components/logo'
+import {Modal, ModalContents, ModalOpenButton} from './components/modal'
 
 function LoginForm({onSubmit, submitButton}) {
   function handleSubmit(event) {
@@ -42,10 +41,7 @@ function LoginForm({onSubmit, submitButton}) {
         <label htmlFor="password">Password</label>
         <Input id="password" type="password" />
       </FormGroup>
-      <div>
-        {React.cloneElement(submitButton, {type: 'submit'})}
-        <Spinner css={{marginLeft: 5}} />
-      </div>
+      <div>{React.cloneElement(submitButton, {type: 'submit'})}</div>
     </form>
   )
 }

@@ -4,7 +4,7 @@ import '@reach/dialog/styles.css'
 import 'bootstrap/dist/css/bootstrap-reboot.css'
 import * as React from 'react'
 import ReactDOM from 'react-dom'
-import {Button, FormGroup, Input} from './components/lib'
+import {Button, FormGroup, Input, Spinner} from './components/lib.extra-3'
 import {Logo} from './components/logo'
 import {Modal, ModalContents, ModalOpenButton} from './components/modal'
 
@@ -41,6 +41,7 @@ function LoginForm({onSubmit, submitButton}) {
         <Input id="password" type="password" />
       </FormGroup>
       <div>{React.cloneElement(submitButton, {type: 'submit'})}</div>
+      <Spinner css={{marginLeft: 5}} />
     </form>
   )
 }
