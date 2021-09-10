@@ -34,18 +34,16 @@ function App() {
     run(getUser())
   }, [run])
 
-  const login = form => {
-    auth.login(form).then(user => setData(user))
-  }
-  const register = form => {
-    auth.register(form).then(user => setData(user))
-  }
+  const login = form => auth.login(form).then(user => setData(user))
+
+  const register = form => auth.register(form).then(user => setData(user))
+
   const logout = () => {
     auth.logout()
     setData(null)
   }
 
-  if (isLoading | isIdle) {
+  if (isLoading || isIdle) {
     return <FullPageSpinner />
   }
   if (isError) {
