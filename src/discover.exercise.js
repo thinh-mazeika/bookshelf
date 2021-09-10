@@ -33,8 +33,8 @@ function DiscoverBooksScreen() {
         setQueried(true)
       },
       errorResponse => {
-        setStatus('error')
         setError(errorResponse)
+        setStatus('error')
       },
     )
   }, [queried, query])
