@@ -14,7 +14,7 @@ function NotFoundScreen() {
     >
       <div>
         Sorry... nothing here.
-        <Link to={'/discover'}>Go home</Link>
+        <Link to="/discover">Go home</Link>
       </div>
     </div>
   )
