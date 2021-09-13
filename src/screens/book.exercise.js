@@ -1,44 +1,23 @@
 /** @jsx jsx */
 import {jsx} from '@emotion/core'
 import Tooltip from '@reach/tooltip'
-import bookPlaceholderSvg from 'assets/book-placeholder.svg'
-import {Textarea} from 'components/lib'
+import {ErrorMessage, Textarea} from 'components/lib'
 import {Rating} from 'components/rating'
 import {StatusButtons} from 'components/status-buttons'
 import debounceFn from 'debounce-fn'
 import * as React from 'react'
 import {FaRegCalendarAlt} from 'react-icons/fa'
-import {queryCache, useMutation, useQuery} from 'react-query'
 import {useParams} from 'react-router-dom'
 import * as colors from 'styles/colors'
 import * as mq from 'styles/media-queries'
-import {client} from 'utils/api-client'
+import {useBook} from 'utils/books'
+import {useListItem, useUpdateListItem} from 'utils/list-items'
 import {formatDate} from 'utils/misc'
-
-const loadingBook = {
-  title: 'Loading...',
-  author: 'loading...',
-  coverImageUrl: bookPlaceholderSvg,
-  publisher: 'Loading Publishing',
-  synopsis: 'Loading...',
-  loadingBook: true,
-}
 
 function BookScreen({user}) {
   const {bookId} = useParams()
-  const {data: book = loadingBook} = useQuery({
-    queryKey: ['book', {bookId}],
-    queryFn: () =>
-      client(`books/${bookId}`, {token: user.token}).then(data => data.book),
-  })
-
-  const {data: listItems} = useQuery({
-    queryKey: 'list-items',
-    queryFn: () =>
-      client(`list-items`, {token: user.token}).then(data => data.listItems),
-  })
-
-  const listItem = listItems?.find(li => li.bookId === bookId) ?? null
+  const book = useBook(bookId, user)
+  const listItem = useListItem(user, bookId)
 
   const {title, author, coverImageUrl, publisher, synopsis} = book
 
@@ -122,15 +101,7 @@ function ListItemTimeframe({listItem}) {
 }
 
 function NotesTextarea({listItem, user}) {
-  const [mutate] = useMutation(
-    updates =>
-      client(`list-items/${updates.id}`, {
-        method: 'PUT',
-        token: user.token,
-        data: updates,
-      }),
-    {onSettled: queryCache.invalidateQueries('list-items')},
-  )
+  const [mutate, {error, isError}] = useUpdateListItem(user)
 
   const debouncedMutate = React.useMemo(
     () => debounceFn(mutate, {wait: 300}),
@@ -156,6 +127,13 @@ function NotesTextarea({listItem, user}) {
         >
           Notes
         </label>
+        {isError ? (
+          <ErrorMessage
+            error={error}
+            variant="inline"
+            css={{marginLeft: 6, fontSize: '0.7em'}}
+          />
+        ) : null}
       </div>
       <Textarea
         id="notes"

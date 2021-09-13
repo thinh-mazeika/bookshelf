@@ -31,7 +31,7 @@ const defaultMutationOptions = {
   onSettled: () => queryCache.invalidateQueries('list-items'),
 }
 
-function useUpdateListItem(user, options) {
+function useUpdateListItem(user, ...options) {
   return useMutation(
     updates =>
       client(`list-items/${updates.id}`, {
@@ -59,7 +59,18 @@ function useUpdateListItem(user, options) {
 function useRemoveListItem(user, options) {
   return useMutation(
     ({id}) => client(`list-items/${id}`, {method: 'DELETE', token: user.token}),
-    {...defaultMutationOptions, ...options},
+    {
+      onMutate(removedItem) {
+        const previousItems = queryCache.getQueryData('list-items')
+
+        queryCache.setQueryData('list-items', old => {
+          return old.filter(item => item.id !== removedItem.id)
+        })
+        return () => queryCache.setQueryData('list-items', previousItems)
+      },
+      ...defaultMutationOptions,
+      ...options,
+    },
   )
 }
 
