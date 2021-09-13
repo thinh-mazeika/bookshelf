@@ -38,7 +38,7 @@ function DiscoverBooksScreen({user}) {
     queryFn: () =>
       client(`books?query=${encodeURIComponent(query)}`, {
         token: user.token,
-      }).then(data => data.boooks),
+      }).then(data => data.books),
   })
 
   function handleSearchSubmit(event) {
