@@ -51,6 +51,17 @@ function TooltipButton({label, highlight, onClick, icon, ...rest}) {
 }
 
 function StatusButtons({user, book}) {
+  // const [mutate] = useMutation(
+  //   () => {
+  //     throw new Error('oh no, mutation failed')
+  //   },
+  //   {throwOnError: true},
+  // )
+
+  // const success = () => console.log('success')
+  // const failure = () => console.log('failure')
+  // mutate().then(success, failure)
+
   const listItem = useListItem(user, book.id)
   // 💯 Use hooks & handle errors
   const [update] = useUpdateListItem(user, {throwOnError: true})
