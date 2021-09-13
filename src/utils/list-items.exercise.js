@@ -26,6 +26,8 @@ function useListItem(user, bookId) {
 }
 
 const defaultMutationOptions = {
+  onError: (err, variables, recover) =>
+    typeof recover === 'function' ? recover() : null,
   onSettled: () => queryCache.invalidateQueries('list-items'),
 }
 
@@ -37,7 +39,20 @@ function useUpdateListItem(user, options) {
         data: updates,
         token: user.token,
       }),
-    {...defaultMutationOptions, ...options},
+    {
+      // 💯 Add optimistic updates and recovery
+      onMutate(newItem) {
+        const previousItem = queryCache.getQueryData('list-items')
+        queryCache.setQueryData('list-items', old => {
+          return old.map(item => {
+            return item.id === newItem.id ? {...item, ...newItem} : item
+          })
+        })
+        return () => queryCache.setQueryData('list-items', previousItem)
+      },
+      ...defaultMutationOptions,
+      ...options,
+    },
   )
 }
 
