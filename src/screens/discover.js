@@ -1,13 +1,12 @@
 /** @jsx jsx */
 import {jsx} from '@emotion/core'
-
-import * as React from 'react'
 import Tooltip from '@reach/tooltip'
+import {BookRow} from 'components/book-row'
+import {BookListUL, Input, Spinner} from 'components/lib'
+import * as React from 'react'
 import {FaSearch, FaTimes} from 'react-icons/fa'
 import * as colors from 'styles/colors'
 import {useBookSearch, useRefetchBookSearchQuery} from 'utils/books'
-import {BookRow} from 'components/book-row'
-import {BookListUL, Spinner, Input} from 'components/lib'
 
 function DiscoverBooksScreen() {
   const [query, setQuery] = React.useState('')
