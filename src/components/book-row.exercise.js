@@ -1,16 +1,13 @@
 /** @jsx jsx */
 import {jsx} from '@emotion/core'
-
 import {Link} from 'react-router-dom'
-import {useListItem} from 'utils/list-items'
-import * as mq from 'styles/media-queries'
 import * as colors from 'styles/colors'
-import {StatusButtons} from './status-buttons'
+import * as mq from 'styles/media-queries'
+import {useListItem} from 'utils/list-items'
 import {Rating} from './rating'
+import {StatusButtons} from './status-buttons'
 
-// 💣 remove the user prop
-// the children components that needed it can get it from context
-function BookRow({user, book}) {
+function BookRow({book}) {
   const {title, author, coverImageUrl} = book
 
   const listItem = useListItem(book.id)
@@ -73,13 +70,7 @@ function BookRow({user, book}) {
               >
                 {title}
               </h2>
-              {listItem?.finishDate ? (
-                <Rating
-                  // 💣 remove the user prop here
-                  user={user}
-                  listItem={listItem}
-                />
-              ) : null}
+              {listItem?.finishDate ? <Rating listItem={listItem} /> : null}
             </div>
             <div css={{marginLeft: 10}}>
               <div
@@ -111,11 +102,7 @@ function BookRow({user, book}) {
           height: '100%',
         }}
       >
-        <StatusButtons
-          // 💣 remove the user prop here
-          user={user}
-          book={book}
-        />
+        <StatusButtons book={book} />
       </div>
     </div>
   )
