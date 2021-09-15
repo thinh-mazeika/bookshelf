@@ -1,8 +1,8 @@
 import * as auth from 'auth-provider'
+import {FullPageErrorFallback, FullPageSpinner} from 'components/lib'
 import React from 'react'
-import {FullPageErrorFallback, FullPageSpinner} from './components/lib'
-import {client} from './utils/api-client'
-import {useAsync} from './utils/hooks'
+import {client} from 'utils/api-client'
+import {useAsync} from 'utils/hooks'
 
 const AuthContext = React.createContext()
 AuthContext.displayName = 'AuthContext'
