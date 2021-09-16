@@ -40,4 +40,5 @@ function Profiler({metadata, phases, ...props}) {
   return <React.Profiler onRender={reportProfile} {...props} />
 }
 
+export {unstable_trace as trace, unstable_wrap as wrap} from 'scheduler/tracing'
 export {Profiler}

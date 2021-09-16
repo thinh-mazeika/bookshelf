@@ -1,23 +1,23 @@
 /** @jsx jsx */
 import {jsx} from '@emotion/core'
-
+import Tooltip from '@reach/tooltip'
+import {trace} from 'components/profiler'
 import * as React from 'react'
 import {
-  FaCheckCircle,
-  FaPlusCircle,
-  FaMinusCircle,
   FaBook,
+  FaCheckCircle,
+  FaMinusCircle,
+  FaPlusCircle,
   FaTimesCircle,
 } from 'react-icons/fa'
-import Tooltip from '@reach/tooltip'
-import {
-  useListItem,
-  useUpdateListItem,
-  useRemoveListItem,
-  useCreateListItem,
-} from 'utils/list-items'
 import * as colors from 'styles/colors'
 import {useAsync} from 'utils/hooks'
+import {
+  useCreateListItem,
+  useListItem,
+  useRemoveListItem,
+  useUpdateListItem,
+} from 'utils/list-items'
 import {CircleButton, Spinner} from './lib'
 
 function TooltipButton({label, highlight, onClick, icon, ...rest}) {
@@ -27,7 +27,9 @@ function TooltipButton({label, highlight, onClick, icon, ...rest}) {
     if (isError) {
       reset()
     } else {
-      run(onClick())
+      trace(`Click ${label}`, performance.now(), () => {
+        run(onClick())
+      })
     }
   }
 
