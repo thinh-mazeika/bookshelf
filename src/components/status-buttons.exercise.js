@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import {jsx} from '@emotion/core'
 import Tooltip from '@reach/tooltip'
-import {trace} from 'components/profiler'
 import * as React from 'react'
 import {
   FaBook,
@@ -10,6 +9,7 @@ import {
   FaPlusCircle,
   FaTimesCircle,
 } from 'react-icons/fa'
+import {unstable_trace as trace} from 'scheduler/tracing'
 import * as colors from 'styles/colors'
 import {useAsync} from 'utils/hooks'
 import {
