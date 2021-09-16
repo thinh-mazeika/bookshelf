@@ -1,5 +1,5 @@
-import {wrap} from 'components/profiler'
 import * as React from 'react'
+import {unstable_wrap as wrap} from 'scheduler/tracing'
 
 function useSafeDispatch(dispatch) {
   const mounted = React.useRef(false)
