@@ -1,13 +1,13 @@
 /** @jsx jsx */
 import {jsx} from '@emotion/core'
-
-import * as React from 'react'
 import Tooltip from '@reach/tooltip'
+import {BookRow} from 'components/book-row'
+import {BookListUL, Input, Spinner} from 'components/lib'
+import {Profiler} from 'components/profiler'
+import * as React from 'react'
 import {FaSearch, FaTimes} from 'react-icons/fa'
 import * as colors from 'styles/colors'
 import {useBookSearch, useRefetchBookSearchQuery} from 'utils/books'
-import {BookRow} from 'components/book-row'
-import {BookListUL, Spinner, Input} from 'components/lib'
 
 function DiscoverBooksScreen() {
   const [query, setQuery] = React.useState('')
@@ -84,13 +84,18 @@ function DiscoverBooksScreen() {
           </div>
         )}
         {books.length ? (
-          <BookListUL css={{marginTop: 20}}>
-            {books.map(book => (
-              <li key={book.id} aria-label={book.title}>
-                <BookRow key={book.id} book={book} />
-              </li>
-            ))}
-          </BookListUL>
+          <Profiler
+            id="Discover Books Screen Book List"
+            metadata={{query, bookCount: books.length}}
+          >
+            <BookListUL css={{marginTop: 20}}>
+              {books.map(book => (
+                <li key={book.id} aria-label={book.title}>
+                  <BookRow key={book.id} book={book} />
+                </li>
+              ))}
+            </BookListUL>
+          </Profiler>
         ) : queried ? (
           <div css={{marginTop: 20, fontSize: '1.2em', textAlign: 'center'}}>
             {isLoading ? (
