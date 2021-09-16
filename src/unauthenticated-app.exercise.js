@@ -1,10 +1,9 @@
 /** @jsx jsx */
 import {jsx} from '@emotion/core'
-
 import * as React from 'react'
-import {Input, Button, Spinner, FormGroup, ErrorMessage} from './components/lib'
-import {Modal, ModalContents, ModalOpenButton} from './components/modal'
+import {Button, ErrorMessage, FormGroup, Input, Spinner} from './components/lib'
 import {Logo} from './components/logo'
+import {Modal, ModalContents, ModalOpenButton} from './components/modal'
 import {useAuth} from './context/auth-context'
 import {useAsync} from './utils/hooks'
 
@@ -108,9 +107,4 @@ function UnauthenticatedApp() {
   )
 }
 
-// 🐨 change this to a default export
-export {UnauthenticatedApp}
-
-// 🐨 Unfortunately, to make this work for our workshop,
-// you need to add this to src/unauthenticated-app.js:
-// export {default} from './unauthenticated-app.exercise'
+export default UnauthenticatedApp
