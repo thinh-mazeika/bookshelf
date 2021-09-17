@@ -83,7 +83,7 @@ test('automatically logs the user out if a request returns a 401', async () => {
     }),
   )
   const error = await client(endpoint).catch(e => e)
-  expect(error.message).toMatchInlineSnapshot(`"Please re-authenticate"`)
+  expect(error.message).toMatchInlineSnapshot(`"Please re-authenticate."`)
   expect(queryCache.clear).toHaveBeenCalledTimes(1)
   expect(auth.logout).toHaveBeenCalledTimes(1)
 })
