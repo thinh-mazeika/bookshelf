@@ -9,6 +9,15 @@ afterEach(() => {
   console.error.mockRestore()
 })
 
+function deferred() {
+  let resolve, reject
+  const promise = new Promise((res, rej) => {
+    resolve = res
+    reject = rej
+  })
+  return {promise, resolve, reject}
+}
+
 const defaultState = {
   status: 'idle',
   data: null,
@@ -46,15 +55,6 @@ const rejectedState = {
   isError: true,
 }
 
-function deferred() {
-  let resolve, reject
-  const promise = new Promise((res, rej) => {
-    resolve = res
-    reject = rej
-  })
-  return {promise, resolve, reject}
-}
-
 test('calling run with a promise which resolves', async () => {
   const {promise, resolve} = deferred()
   const {result} = renderHook(() => useAsync())
@@ -69,7 +69,11 @@ test('calling run with a promise which resolves', async () => {
     resolve(resolvedValue)
     await p
   })
-  expect(result.current).toEqual(resolvedState)
+  expect(result.current).toEqual({
+    ...resolvedState,
+    data: resolvedValue,
+  })
+
   act(() => {
     result.current.reset()
   })
@@ -89,7 +93,7 @@ test('calling run with a promise which rejects', async () => {
   await act(async () => {
     reject(rejectedValue)
     await p.catch(() => {
-      /* ignore erorr */
+      /* ignore error */
     })
   })
   expect(result.current).toEqual({...rejectedState, error: rejectedValue})
@@ -105,7 +109,7 @@ test('can specify an initial state', () => {
   })
 })
 
-test.todo('can set the data', () => {
+test('can set the data', () => {
   const mockData = Symbol('resolved value')
   const {result} = renderHook(() => useAsync())
   act(() => {
@@ -117,7 +121,7 @@ test.todo('can set the data', () => {
   })
 })
 
-test.todo('can set the error', () => {
+test('can set the error', () => {
   const mockError = Symbol('rejected value')
   const {result} = renderHook(() => useAsync())
   act(() => {
@@ -129,25 +133,22 @@ test.todo('can set the error', () => {
   })
 })
 
-test.todo(
-  'No state updates happen if the component is unmounted while pending',
-  async () => {
-    const {promise, resolve} = deferred()
-    const {result, unmount} = renderHook(() => useAsync())
-    let p
-    act(() => {
-      p = result.current.run(promise)
-    })
-    unmount()
-    await act(async () => {
-      resolve()
-      await p
-    })
-    expect(console.error).not.toHaveBeenCalled()
-  },
-)
+test('No state updates happen if the component is unmounted while pending', async () => {
+  const {promise, resolve} = deferred()
+  const {result, unmount} = renderHook(() => useAsync())
+  let p
+  act(() => {
+    p = result.current.run(promise)
+  })
+  unmount()
+  await act(async () => {
+    resolve()
+    await p
+  })
+  expect(console.error).not.toHaveBeenCalled()
+})
 
-test.todo('calling "run" without a promise results in an early error', () => {
+test('calling "run" without a promise results in an early error', () => {
   const {result} = renderHook(() => useAsync())
   expect(() => result.current.run()).toThrowErrorMatchingInlineSnapshot(
     `"The argument passed to useAsync().run must be a promise. Maybe a function that's passed isn't returning anything?"`,
