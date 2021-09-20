@@ -1,10 +1,10 @@
-import * as React from 'react'
 import {render, screen, waitForElementToBeRemoved} from '@testing-library/react'
-import {queryCache} from 'react-query'
-import * as auth from 'auth-provider'
-import {buildUser, buildBook} from 'test/generate'
-import {AppProviders} from 'context'
 import {App} from 'app'
+import * as auth from 'auth-provider'
+import {AppProviders} from 'context'
+import * as React from 'react'
+import {queryCache} from 'react-query'
+import {buildBook, buildUser} from 'test/generate'
 
 // general cleanup
 afterEach(async () => {
