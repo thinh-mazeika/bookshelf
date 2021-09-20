@@ -1,4 +1,8 @@
-import {render, screen, waitForElementToBeRemoved} from '@testing-library/react'
+import {
+  render as rtlRender,
+  screen,
+  waitForElementToBeRemoved,
+} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import {App} from 'app'
 import * as auth from 'auth-provider'
@@ -22,22 +26,38 @@ afterEach(async () => {
   ])
 })
 
-test('renders all the book information', async () => {
-  const user = buildUser()
+// utilities test
+async function render(ui, {route = '/list', user, ...renderOptions} = {}) {
+  user = typeof user === 'undefined' ? await loginAsUser() : user
+  window.history.pushState({}, 'Test Page', route)
+  const returnValue = {
+    ...rtlRender(ui, {wrapper: AppProviders, ...renderOptions}),
+    user,
+  }
+  await waitForLoadingToFinish()
+  return returnValue
+}
+
+async function loginAsUser(userProperties) {
+  const user = buildUser(userProperties)
   await usersDB.create(user)
   const authUser = await usersDB.authenticate(user)
   window.localStorage.setItem(auth.localStorageKey, authUser.token)
+  return authUser
+}
 
-  const book = await booksDB.create(buildBook())
-  const route = `/book/${book.id}`
-  window.history.pushState({}, 'Test page', route)
-
-  render(<App />, {wrapper: AppProviders})
-
-  await waitForElementToBeRemoved(() => [
+const waitForLoadingToFinish = () => {
+  waitForElementToBeRemoved(() => [
     ...screen.queryAllByLabelText(/loading/i),
     ...screen.queryAllByText(/loading/i),
   ])
+}
+
+test('renders all the book information', async () => {
+  const book = await booksDB.create(buildBook())
+  const route = `/book/${book.id}`
+
+  render(<App />, {route})
 
   expect(screen.getByRole('heading', {name: book.title})).toBeInTheDocument()
   expect(screen.getByText(book.author)).toBeInTheDocument()
@@ -66,29 +86,16 @@ test('renders all the book information', async () => {
 })
 
 test('can create a list item for the book', async () => {
-  const user = buildUser()
-  await usersDB.create(user)
-  const authUser = await usersDB.authenticate(user)
-  window.localStorage.setItem(auth.localStorageKey, authUser.token)
-
   const book = await booksDB.create(buildBook())
   const route = `/book/${book.id}`
-  window.history.pushState({}, 'Test Page', route)
-  render(<App />, {wrapper: AppProviders})
 
-  await waitForElementToBeRemoved(() => [
-    ...screen.queryAllByLabelText(/loading/i),
-    ...screen.queryAllByText(/loading/i),
-  ])
+  await render(<App />, {route})
 
   const addToListButton = screen.getByRole('button', {name: /add to list/i})
   userEvent.click(addToListButton)
   expect(addToListButton).toBeDisabled()
 
-  await waitForElementToBeRemoved(() => [
-    ...screen.queryAllByLabelText(/loading/i),
-    ...screen.queryAllByText(/loading/i),
-  ])
+  await waitForLoadingToFinish()
 
   expect(
     screen.getByRole('button', {name: /Mark as read/i}),
